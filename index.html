@@ -99,6 +99,11 @@
       60% { left: 60vw; top: 40vh; transform: scale(1.1) rotate(-5deg); }
       100% { left: 110vw; top: 10vh; transform: scale(0.8) rotate(15deg); }
     }
+    @keyframes book-cover-open {
+      0% { transform: scale(1) rotateY(0deg); opacity: 1; }
+      80% { transform: scale(1.05) rotateY(0deg); opacity: 1; }
+      100% { transform: scale(0.7) rotateY(-100deg); opacity: 0; }
+    }
   </style>
 </head>
 <body class="w-screen h-screen min-h-screen min-w-full overflow-x-hidden bg-gradient-to-br from-pink-100 via-blue-100 to-yellow-100 flex items-center justify-center relative">
@@ -279,21 +284,60 @@
         </div>
         <!-- Slide 4: Buku & Pesan -->
         <div class="slide absolute inset-0 transition-opacity duration-700 flex flex-col items-center justify-center bg-gradient-to-b from-yellow-100 to-orange-200 z-0">
-          <div class="relative flex flex-col items-center">
-            <!-- Buku -->
-            <div class="relative w-64 h-40 mb-8" style="animation: book-open 1.2s cubic-bezier(.68,-0.55,.27,1.55) forwards;">
+          <div class="relative flex flex-col items-center w-full h-full">
+            <!-- Sampul Buku Animasi (klik untuk buka) -->
+            <div id="book-cover" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-48 z-20 transition-all duration-700 cursor-pointer group" style="animation: none;">
+              <!-- Sampul dengan hiasan bunga dan pita -->
+              <div class="absolute inset-0 rounded-2xl shadow-2xl border-4 border-pink-300 bg-gradient-to-br from-pink-200 via-yellow-100 to-pink-100 flex flex-col items-center justify-center overflow-visible group-hover:scale-105 transition-transform duration-300">
+                <!-- Pita -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-8 flex items-center justify-center z-10">
+                  <div class="w-40 h-4 bg-pink-400 rounded-full blur-sm opacity-60"></div>
+                  <div class="absolute left-1/2 -translate-x-1/2 w-16 h-8 bg-pink-400 rounded-b-full"></div>
+                </div>
+                <!-- Bunga SVG -->
+                <div class="absolute left-4 top-4 z-10">
+                  <svg width="36" height="36" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="7" fill="#fbbf24"/>
+                    <ellipse cx="18" cy="7" rx="5" ry="8" fill="#f472b6"/>
+                    <ellipse cx="29" cy="18" rx="8" ry="5" fill="#f472b6"/>
+                    <ellipse cx="18" cy="29" rx="5" ry="8" fill="#f472b6"/>
+                    <ellipse cx="7" cy="18" rx="8" ry="5" fill="#f472b6"/>
+                  </svg>
+                </div>
+                <div class="absolute right-4 bottom-4 z-10">
+                  <svg width="36" height="36" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="7" fill="#fbbf24"/>
+                    <ellipse cx="18" cy="7" rx="5" ry="8" fill="#f472b6"/>
+                    <ellipse cx="29" cy="18" rx="8" ry="5" fill="#f472b6"/>
+                    <ellipse cx="18" cy="29" rx="5" ry="8" fill="#f472b6"/>
+                    <ellipse cx="7" cy="18" rx="8" ry="5" fill="#f472b6"/>
+                  </svg>
+                </div>
+                <!-- Judul Sampul -->
+                <div class="relative z-20 mt-12">
+                  <h2 class="text-2xl md:text-3xl font-bold text-pink-700 drop-shadow mb-2">Untuk Nazwa Nurul Ramadhani</h2>
+                  <span class="block text-lg text-pink-500 font-medium">Selamat Ulang Tahun</span>
+                </div>
+                <!-- Efek glow -->
+                <div class="absolute inset-0 rounded-2xl pointer-events-none" style="box-shadow:0 0 40px 10px #fbbf24,0 0 80px 20px #f472b6;"></div>
+                <!-- Petunjuk klik -->
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 text-pink-600 text-base font-semibold animate-bounce select-none">Klik untuk membuka</div>
+              </div>
+            </div>
+            <!-- Buku isi (muncul setelah sampul terbuka) -->
+            <div id="book-content" class="relative w-72 h-48 mb-8 opacity-0 transition-opacity duration-700" style="animation: none;">
               <div class="absolute left-0 top-0 w-1/2 h-full bg-white rounded-l-2xl shadow-lg border-r-2 border-yellow-300" style="z-index:2;"></div>
               <div class="absolute right-0 top-0 w-1/2 h-full bg-white rounded-r-2xl shadow-lg border-l-2 border-yellow-300" style="z-index:2;"></div>
               <div class="absolute left-1/2 top-0 w-1/2 h-full bg-yellow-100 rounded-r-2xl shadow-md" style="z-index:1; animation: page-flip 1.5s 1.2s cubic-bezier(.68,-0.55,.27,1.55) forwards;"></div>
             </div>
-            <!-- Pesan -->
-            <div class="w-full px-4 max-h-72 overflow-y-auto">
+            <!-- Pesan (muncul setelah buku terbuka) -->
+            <div id="book-message" class="w-full px-4 max-h-72 overflow-y-auto opacity-0 transition-opacity duration-700" style="animation: none;">
               <p class="text-lg md:text-xl text-gray-800 leading-relaxed text-center whitespace-pre-line font-medium">
 Haii... bagaimana kabarmu hari ini dan selamat ulang tahun yaaa... Nazwa Nurul Ramadhani. aku tau ini bagaimana gitu ga enak juga akunya, ternyata.... sedikit yang aku tau tentang kamu, kalo kamu itu sering les sehabis pulang sekolah aku gatau kalo pas smk pas smp pernahkan?, dan ada yg bilang pokoknya aku gabakal sebut namanya pokoknya kenal ibu kamu jadi ibu kamu pengen kamu sukses soalnya kamu anak tunggal dan pengennya kalo gasalah mau jadi dokter dan gitu kalo gasalah ya... ternyata sedikit banget yang aku tau tetang kamu jadi maaf aku gabisa ngertiin kamu dan yahh begitu... aku terlalu menginginkan perhatian kamu dan jadi nya kaku. aku senang bertemu kamu dan aku ga nyesel sama sekali, waktu denger suara kamu pertamakali aku memikirkan bagaimana ekspresi kamu bagaimana apa seneng apa gimana dan lain lain apalagi pas aku ketemu kamu kamu kebanyakan diem jadi mungkin ga enak juga wkwkw. Oke waa jadi initinya aku mau bilang aku udah memilih kamu jadi akan aku tanggung resiko akan ku usahakan yg terbaik jadi kumohon jangan merasa bersalah sama sekali kamu ga bikin aku kecewa aku memilih kamu jadi akan ku usahakan walau.... ya begitu ga enaknyaa coba kamu mikir aja yg buat kedepannya gimana kalo misal ga ketemu. terima kasih awaa thank you for everything and good luck for the future and be careful
               </p>
-            </div>
-            <div class="mt-6 text-center">
-              <span class="inline-block px-4 py-2 bg-pink-200/80 rounded-full text-pink-700 font-medium shadow">Selamat ulang tahun, semoga selalu bahagia!</span>
+              <div class="mt-6 text-center">
+                <span class="inline-block px-4 py-2 bg-pink-200/80 rounded-full text-pink-700 font-medium shadow">Selamat ulang tahun, semoga selalu bahagia!</span>
+              </div>
             </div>
           </div>
         </div>
@@ -394,6 +438,30 @@ Haii... bagaimana kabarmu hari ini dan selamat ulang tahun yaaa... Nazwa Nurul R
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     let current = 0;
+    // Animasi buku slide 4 (klik untuk buka)
+    function animateBookSlide() {
+      const cover = document.getElementById('book-cover');
+      const content = document.getElementById('book-content');
+      const message = document.getElementById('book-message');
+      if (!cover || !content || !message) return;
+      // Reset
+      cover.style.animation = 'none';
+      cover.style.opacity = 1;
+      content.style.opacity = 0;
+      message.style.opacity = 0;
+      // Event klik
+      cover.onclick = () => {
+        cover.style.animation = 'book-cover-open 1.2s cubic-bezier(.68,-0.55,.27,1.55) forwards';
+        setTimeout(() => {
+          cover.style.opacity = 0;
+          content.style.opacity = 1;
+          content.style.animation = 'book-open 1.2s cubic-bezier(.68,-0.55,.27,1.55) forwards';
+          setTimeout(() => {
+            message.style.opacity = 1;
+          }, 900);
+        }, 1200);
+      };
+    }
     function showSlide(idx) {
       slides.forEach((slide, i) => {
         slide.style.opacity = i === idx ? '1' : '0';
@@ -403,6 +471,10 @@ Haii... bagaimana kabarmu hari ini dan selamat ulang tahun yaaa... Nazwa Nurul R
         dot.classList.toggle('bg-pink-500', i === idx);
         dot.classList.toggle('bg-pink-200', i !== idx);
       });
+      // Trigger animasi buku jika slide ke-4
+      if (idx === 3) {
+        animateBookSlide();
+      }
     }
     document.getElementById('prevBtn').onclick = () => {
       current = (current - 1 + slides.length) % slides.length;
